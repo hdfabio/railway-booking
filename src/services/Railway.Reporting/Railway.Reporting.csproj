@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <ItemGroup>
+    <ProjectReference Include="..\..\Railway.Application\Railway.Application.csproj" />
+  </ItemGroup>
+</Project>
