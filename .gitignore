@@ -1,0 +1,9 @@
+.dotnet/
+.vs/
+**/bin/
+**/obj/
+**/App_Data/
+*.db
+railway-web/node_modules/
+railway-web/dist/
+railway-web/.angular/
