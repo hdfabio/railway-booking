@@ -1,0 +1,105 @@
+<main class="shell">
+  <section class="topbar">
+    <div>
+      <p class="eyebrow">Railway reservation platform</p>
+      <h1>Search, reserve, pay, and notify from one service map.</h1>
+      <p class="user-chip" *ngIf="currentUser">Signed in as {{ currentUser.name }} ({{ currentUser.loyaltyTier }})</p>
+    </div>
+    <button type="button" class="icon-button" title="Refresh reports" [disabled]="busy" (click)="loadDashboard()">
+      Refresh
+    </button>
+  </section>
+
+  <p class="banner error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+  <section class="layout">
+    <aside class="panel">
+      <h2>Journey</h2>
+      <label>From <input [(ngModel)]="search.source" placeholder="NDLS or Delhi"></label>
+      <label>To <input [(ngModel)]="search.destination" placeholder="MMCT or Mumbai"></label>
+      <label>Date <input type="date" [(ngModel)]="search.date"></label>
+      <div class="two">
+        <label>Class
+          <select [(ngModel)]="search.travelClass">
+            <option>1AC</option><option>2AC</option><option>3AC</option><option>SL</option>
+          </select>
+        </label>
+        <label>Quota
+          <select [(ngModel)]="search.quota">
+            <option>GENERAL</option><option>TATKAL</option>
+          </select>
+        </label>
+      </div>
+      <button type="button" class="primary" [disabled]="busy" (click)="findTrains()">Find trains</button>
+
+      <h2>Passenger</h2>
+      <label>Name <input [(ngModel)]="passenger.name"></label>
+      <div class="two">
+        <label>Age <input type="number" [(ngModel)]="passenger.age"></label>
+        <label>Gender
+          <select [(ngModel)]="passenger.gender">
+            <option>Female</option><option>Male</option><option>Other</option>
+          </select>
+        </label>
+      </div>
+      <label>Berth
+        <select [(ngModel)]="passenger.berthPreference">
+          <option>Lower</option><option>Middle</option><option>Upper</option><option>Side Upper</option>
+        </select>
+      </label>
+    </aside>
+
+    <section class="content">
+          <div class="toolbar">
+            <h2>Available trains</h2>
+            <span>{{ trains.length }} results</span>
+          </div>
+      <article class="train-card" *ngFor="let train of trains" [class.selected]="selectedTrain?.trainId === train.trainId">
+        <div>
+          <strong>{{ train.trainNumber }} {{ train.name }}</strong>
+          <p>{{ train.source.code }} to {{ train.destination.code }} · {{ train.departure }} to {{ train.arrival }}</p>
+        </div>
+        <div class="availability">
+          <span>CNF {{ train.availability.confirmed }}</span>
+          <span>RAC {{ train.availability.rac }}</span>
+          <span>WL {{ train.availability.waitlist }}</span>
+        </div>
+        <button type="button" (click)="selectTrain(train)">Select</button>
+      </article>
+
+      <article class="empty" *ngIf="!trains.length && !busy">No trains loaded yet.</article>
+
+      <section class="booking-strip">
+        <button type="button" class="primary" [disabled]="!selectedTrain || busy" (click)="book()">Book selected train</button>
+        <input [(ngModel)]="pnrLookup" placeholder="PNR status">
+        <button type="button" [disabled]="busy" (click)="lookupPnr()">Lookup</button>
+      </section>
+
+      <article class="ticket" *ngFor="let booking of bookingList">
+        <h2>PNR {{ booking.pnr }}</h2>
+        <p>{{ booking.bookingStatus }} · {{ booking.paymentStatus }} · INR {{ booking.fare }}</p>
+        <div class="manifest" *ngFor="let traveller of booking.passengers">
+          <span>{{ traveller.name }}</span>
+          <span>{{ traveller.status }}</span>
+          <span>{{ traveller.coach || '-' }} {{ traveller.seatNumber || '' }} {{ traveller.berth || '' }}</span>
+        </div>
+        <button
+          type="button"
+          class="danger"
+          [disabled]="busy || booking.bookingStatus === 'CANCELLED'"
+          (click)="cancel(booking)">
+          Cancel ticket
+        </button>
+      </article>
+    </section>
+
+    <aside class="panel">
+      <h2>Reporting</h2>
+      <div class="metric"><span>Total</span><strong>{{ report?.totalBookings ?? 0 }}</strong></div>
+      <div class="metric"><span>Confirmed</span><strong>{{ report?.confirmedBookings ?? 0 }}</strong></div>
+      <div class="metric"><span>Revenue</span><strong>INR {{ report?.revenue ?? 0 }}</strong></div>
+      <h2>Event stream</h2>
+      <p class="event" *ngFor="let event of events">{{ event.type }} · {{ event.aggregateId }}</p>
+    </aside>
+  </section>
+</main>
