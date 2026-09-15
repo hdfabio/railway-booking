@@ -1,0 +1,31 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: railway
+      POSTGRES_USER: railway
+      POSTGRES_PASSWORD: railway
+    ports:
+      - "5432:5432"
+    volumes:
+      - railway_pg:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  # Optional: run microservices in Docker (build images locally first).
+  # gateway:
+  #   build: { context: ., dockerfile: src/services/Railway.Gateway/Dockerfile }
+  #   ports: ["5000:8080"]
+  #   depends_on: [postgres, rabbitmq]
+
+volumes:
+  railway_pg:

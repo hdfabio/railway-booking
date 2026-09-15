@@ -1,0 +1,28 @@
+{
+  "ConnectionStrings": {
+    "RailwayDatabase": "Host=localhost;Port=5432;Database=railway;Username=railway;Password=railway"
+  },
+  "Jwt": {
+    "Key": "Railway-Dev-Signing-Key-Change-In-Production-32+",
+    "Issuer": "Railway",
+    "Audience": "Railway.Web",
+    "ExpiresMinutes": 60
+  },
+  "RabbitMq": {
+    "HostName": "localhost",
+    "Port": 5672,
+    "UserName": "guest",
+    "Password": "guest",
+    "ExchangeName": "railway.events"
+  },
+  "Services": {
+    "Catalog": "http://localhost:5002",
+    "Inventory": "http://localhost:5003",
+    "Booking": "http://localhost:5004",
+    "Identity": "http://localhost:5001",
+    "Payment": "http://localhost:5005",
+    "Notification": "http://localhost:5006",
+    "Reporting": "http://localhost:5007",
+    "Events": "http://localhost:5008"
+  }
+}
